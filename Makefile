@@ -6,7 +6,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=smartdns
-PKG_VERSION:=1.2025.47
+PKG_VERSION:=1.2025.48
 PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
@@ -46,7 +46,7 @@ endef
 define Package/smartdns
   $(Package/smartdns/default)
   TITLE:=smartdns server
-  DEPENDS:=+libpthread +libopenssl +libatomic
+  DEPENDS:=+libpthread +libopenssl +libatomic +zlib
 endef
 
 define Package/smartdns/description

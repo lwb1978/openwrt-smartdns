@@ -7,18 +7,18 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=smartdns
 PKG_VERSION:=1.2026.48.4
-PKG_RELEASE:=1
+PKG_RELEASE:=3
+PKG_TAGS=1.2026.v48.4.3-canary_with_ui-canary-canary
 
-PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=https://www.github.com/pymumu/smartdns.git
-PKG_SOURCE_VERSION:=master
-# PKG_MIRROR_HASH:=skip
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_TAGS).tar.gz
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_TAGS)
+PKG_SOURCE_URL:=https://codeload.github.com/PikuZheng/smartdns/tar.gz/$(PKG_TAGS)?
+PKG_HASH:=bc22f219007298fefa68b9c1dae583e71dca2a670fc0f4e96f8c00cc93effedc
 
-SMARTDNS_WEBUI_VERSION:=1.0.0
-SMARTDNS_WEBUI_SOURCE_PROTO:=git
-SMARTDNS_WEBUI_SOURCE_URL:=https://github.com/pymumu/smartdns-webui.git
-SMARTDNS_WEBUI_SOURCE_VERSION:=main
-SMARTDNS_WEBUI_FILE:=smartdns-webui-$(SMARTDNS_WEBUI_VERSION).tar.gz
+SMARTDNS_WEBUI_SOURCE_URL:=https://codeload.github.com/PikuZheng/smartdns-webui/tar.gz
+SMARTDNS_WEBUI_SOURCE_VERSION:=4667a7dae18b9776576cda6c98be649703fe671a
+SMARTDNS_WEBUI_FILE:=smartdns-webui-$(SMARTDNS_WEBUI_SOURCE_VERSION).tar.gz
+SMARTDNS_WEBUI_HASH:=422c920f825b1570f76f1c7d9c2a74bf1c422fddb4f304a0fcb9a1229bc50580
 
 PKG_MAINTAINER:=Nick Peng <pymumu@gmail.com>
 PKG_LICENSE:=GPL-3.0-or-later
@@ -30,7 +30,7 @@ PKG_BUILD_PARALLEL:=1
 # PACKAGE_smartdns-ui:node/host
 PKG_BUILD_DEPENDS:=PACKAGE_smartdns-ui:rust/host 
 
-include ../../lang/rust/rust-package.mk
+include $(TOPDIR)/feeds/packages/lang/rust/rust-package.mk
 include $(INCLUDE_DIR)/package.mk
 
 MAKE_VARS += VER=$(PKG_VERSION) 
@@ -114,19 +114,18 @@ endef
 
 define Download/smartdns-webui
 	FILE:=$(SMARTDNS_WEBUI_FILE)
-	PROTO:=$(SMARTDNS_WEBUI_SOURCE_PROTO)
 	URL:=$(SMARTDNS_WEBUI_SOURCE_URL)
-	# MIRROR_HASH:=skip
-	VERSION:=$(SMARTDNS_WEBUI_SOURCE_VERSION)
+	URL_FILE:=$(SMARTDNS_WEBUI_SOURCE_VERSION)
 	HASH:=$(SMARTDNS_WEBUI_HASH)
-	SUBDIR:=smartdns-webui
 endef
 $(eval $(call Download,smartdns-webui))
 
 ifdef CONFIG_PACKAGE_smartdns-ui
 define Build/Prepare
 	$(call Build/Prepare/Default)
-	$(TAR) -C $(PKG_BUILD_DIR)/ -xf $(DL_DIR)/$(SMARTDNS_WEBUI_FILE)
+	$(INSTALL_DIR) $(PKG_BUILD_DIR)/smartdns-webui
+	$(TAR) -xzf $(DL_DIR)/$(SMARTDNS_WEBUI_FILE) \
+		-C $(PKG_BUILD_DIR)/smartdns-webui --strip-components=1
 endef
 endif
 
